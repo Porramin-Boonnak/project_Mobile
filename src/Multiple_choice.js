@@ -2,13 +2,18 @@ import { Text, TouchableOpacity, View, Animated } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Card from './Card';
 import { useSelector } from 'react-redux'
+import { insertincorrect } from "./store/collectionSlice";
+import { useDispatch } from 'react-redux'
 import { useState, useRef, useEffect, useMemo } from 'react';
 export default function Multiple_choice({ route, navigation }) {
     const { index } = route.params;
+    const dispatch = useDispatch()
     const [current, setcurrent] = useState(0)
     const [withtime, setwithtime] = useState(false)
     const [backgroundColor, setbackgroundColor] = useState(false)
-    const collection = useSelector((state) => state.collection.collection[index].data)
+    const collection = useSelector((state) => state.collection.collection[index]?.data)
+    const name = useSelector((state) => state.collection.collection[index].name)
+    const incorrect = useRef([])
     const cardRef = useRef(null);
     const shuffle = (array) => {
         const arr = [...array];
@@ -40,7 +45,8 @@ export default function Multiple_choice({ route, navigation }) {
     }, [current, shufflecollection]);
     useEffect(() => {
         if (!shufflecollection?.[current]) {
-            navigation.navigate('Main');
+            dispatch(insertincorrect({name:name,incorrect:incorrect.current}))
+            navigation.navigate('Result', { index: index });
         }
     }, [shufflecollection, current, navigation]);
     return (
@@ -48,8 +54,13 @@ export default function Multiple_choice({ route, navigation }) {
             {< Card front={shufflecollection[current]?.front} back={shufflecollection[current]?.back} ref={cardRef} />}
             <View style={{ flexDirection: "row", flexWrap: 'wrap', flex: 1, padding: 20, gap: 40, justifyContent: "center" }}>
                 {(choices?.map((item, index) => {
-                    const handelclick = () => {
+                    const handelclick = (back) => {
                         if (!withtime) {
+                            if(back!==shufflecollection[current]?.back)
+                            {
+                                console.log(shufflecollection[current].front)
+                                incorrect.current.push(shufflecollection[current].front)
+                            }
                             setbackgroundColor(true)
                             setwithtime(true)
                             setTimeout(() => {
@@ -60,7 +71,7 @@ export default function Multiple_choice({ route, navigation }) {
                         }
                     }
                     return (
-                        <TouchableOpacity onPress={handelclick} key={index} style={{ backgroundColor: backgroundColor ? shufflecollection[current].back == item ? "#9fff2aff" : "#ff0909ff" : "#fff", borderWidth: 1, borderColor: '#000', width: "28%", height: "40%", borderRadius: 30, justifyContent: "center", alignItems: 'center' }}>
+                        <TouchableOpacity onPress={()=>handelclick(item)} key={index} style={{ backgroundColor: backgroundColor ? shufflecollection[current].back == item ? "#9fff2aff" : "#ff0909ff" : "#fff", borderWidth: 1, borderColor: '#000', width: "28%", height: "40%", borderRadius: 30, justifyContent: "center", alignItems: 'center' }}>
                             <Text style={{ fontSize: 20 }}>{item}</Text>
                         </TouchableOpacity>
                     )

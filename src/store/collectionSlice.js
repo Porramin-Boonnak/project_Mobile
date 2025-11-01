@@ -16,8 +16,13 @@ const collectionSlice = createSlice({
     deletecollection: (state, action) => {
       state.collection = state.collection.filter((_, i) => i !== action.payload.index);
     },
+    insertincorrect: (state, action) => {
+      const index =  state.collection.findIndex(i => i.name === action.payload.name);
+      state.collection[index].incorrect = []
+      state.collection[index].incorrect.push(action.payload.incorrect)
+    },
   },
 });
 
-export const { addcollection,addword,deletecollection } = collectionSlice.actions;
+export const { addcollection,addword,deletecollection,insertincorrect } = collectionSlice.actions;
 export default collectionSlice.reducer;

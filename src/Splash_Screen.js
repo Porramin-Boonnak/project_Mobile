@@ -13,6 +13,7 @@ export default function Splash_Screen({ navigation }) {
             if (JSON.parse(value) !== null) {
                 for(let i=0;i<JSON.parse(value).length;i++)
                 {
+                    console.log("load")
                     dispatch(addcollection(JSON.parse(value)[i]))
                 }
             }

@@ -15,7 +15,7 @@ export default function Main({ navigation }) {
             try {
                 if (collection[0] !== null) {
                     await AsyncStorage.setItem('collection', JSON.stringify(collection));
-                    console.log("from Main")
+                    console.log("Save")
                 }
             } catch (e) {
                 console.log(e);
@@ -38,7 +38,10 @@ export default function Main({ navigation }) {
                             <Text style={{ fontSize: 35, textAlign: 'center' }}>Delete</Text>
                         </TouchableOpacity>
                     </View>
-                    : <Text style={{ fontSize: 35, textAlign: 'center' }}>{item.name}</Text>}
+                    : <View>
+                        <Text style={{ fontSize: 35, textAlign: 'center' }}>{item.name}</Text>
+                        {item.incorrect ? <Text style={{ fontSize: 25, textAlign: 'center' }}>{((item.data?.length-item.incorrect[0]?.length)/item.data?.length)*100} %</Text> : <Text style={{ fontSize: 25, textAlign: 'center' }}>0 %</Text>}
+                    </View>}
             </TouchableOpacity>
         ))
     }
