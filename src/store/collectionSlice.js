@@ -19,7 +19,7 @@ const collectionSlice = createSlice({
     insertincorrect: (state, action) => {
       const index =  state.collection.findIndex(i => i.name === action.payload.name);
       state.collection[index].incorrect = []
-      state.collection[index].incorrect.push(action.payload.incorrect)
+      state.collection[index].incorrect.push(...action.payload.incorrect)
     },
   },
 });

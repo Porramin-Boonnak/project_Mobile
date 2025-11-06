@@ -1,6 +1,13 @@
 import { Text, TouchableOpacity, View, Animated } from 'react-native';
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 
+const palette = {
+  face: "#111827",
+  back: "#1f2937",
+  text: "#e5e7eb",
+  border: "#2a3342"
+};
+
 const Card = forwardRef(({ front, back }, ref) => {
   const rotation = useRef(new Animated.Value(0)).current;
   const [flipped, setFlipped] = useState(false);
@@ -29,35 +36,47 @@ const Card = forwardRef(({ front, back }, ref) => {
     flipped ? flipToFront() : flipToBack();
     setFlipped(!flipped);
   };
-  useImperativeHandle(ref, () => ({
-    flipCard,
-  }));
+  useImperativeHandle(ref, () => ({ flipCard }));
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <TouchableOpacity >
-        <View style={{ width: 300, height: 400 }}>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+      <TouchableOpacity activeOpacity={0.9}>
+        <View style={{ width: 320, height: 420 }}>
           <Animated.View
             style={{
-              justifyContent: 'center', alignItems: 'center', backgroundColor: 'red', height: 400, width: 300, borderRadius: 10, position: 'absolute',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: palette.face,
+              height: 420, width: 320, borderRadius: 18, position: 'absolute',
               transform: [{ rotateY: frontrotate }],
-              zIndex: flipped ? 0 : 1, backfaceVisibility: 'hidden',
+              zIndex: flipped ? 0 : 1,
+              backfaceVisibility: 'hidden',
+              borderWidth: 1, borderColor: palette.border,
+              shadowColor:"#000", shadowOpacity:0.35, shadowRadius:16, shadowOffset:{width:0,height:10}, elevation:7,
+              paddingHorizontal: 18
             }}
           >
-            <Text style={{ fontSize: 20 }}>{front}</Text>
+            <Text style={{ fontSize: 22, color: palette.text, textAlign: "center" }}>{front}</Text>
           </Animated.View>
           <Animated.View
             style={{
-              justifyContent: 'center', alignItems: 'center', backgroundColor: 'blue', height: 400, width: 300, borderRadius: 10, position: 'absolute',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: palette.back,
+              height: 420, width: 320, borderRadius: 18, position: 'absolute',
               transform: [{ rotateY: backrotate }],
-              zIndex: flipped ? 1 : 0, backfaceVisibility: 'hidden',
+              zIndex: flipped ? 1 : 0,
+              backfaceVisibility: 'hidden',
+              borderWidth: 1, borderColor: palette.border,
+              shadowColor:"#000", shadowOpacity:0.35, shadowRadius:16, shadowOffset:{width:0,height:10}, elevation:7,
+              paddingHorizontal: 18
             }}
           >
-            <Text style={{ fontSize: 20 }}>{back}</Text>
+            <Text style={{ fontSize: 22, color: palette.text, textAlign: "center" }}>{back}</Text>
           </Animated.View>
         </View>
       </TouchableOpacity>
     </View>
   );
-}
-)
+});
 export default Card;
